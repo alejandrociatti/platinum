@@ -27,7 +27,9 @@ func _Peer_Connected(player_id):
 	
 func _Peer_Disconnected(player_id):
 	print("User " + str(player_id) + " Disconnected.")
-	get_node(str(player_id)).queue_free()
+	if has_node(str(player_id)):
+		get_node(str(player_id)).queue_free()
+		rpc_id(0, "DespawnPlayer", player_id)
 	
 remote func RequestSkillDamage(skill_name, requester):
 	var player_id = get_tree().get_rpc_sender_id()
@@ -63,3 +65,5 @@ remote func ReturnToken(token):
 	
 func ReturnTokenVerificationResults(player_id, result):
 	rpc_id(player_id, "ReturnTokenVerificationResults", result)
+	if result:
+		rpc_id(0, "SpawnNewPlayer", player_id, Vector2(50, 50))

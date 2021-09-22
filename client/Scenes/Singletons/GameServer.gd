@@ -52,4 +52,10 @@ remote func ReturnTokenVerificationResults(result):
 		print("Login failed, try again")
 		get_node("../LoginScreen").login_button.disabled = false
 		get_node("../LoginScreen").create_account_button.disabled = false
+		
+remote func SpawnNewPlayer(player_id, spawn_position):
+	get_node("../World").SpawnNewPlayer(player_id, spawn_position)
+	
+remote func DespawnPlayer(player_id):
+	get_node("../World").DespawnPlayer(player_id)
 	
