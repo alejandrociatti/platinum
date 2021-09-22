@@ -1,0 +1,8 @@
+{
+  "sword" : { 
+    "damage" : 1
+  }, 
+  "bat" : { 
+    "damage" : 1
+  }, 
+}

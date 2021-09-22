@@ -1,0 +1,86 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://PlayerStats.gd" type="Script" id=1]
+
+[node name="PlayerStats" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="NinePatchRect" type="NinePatchRect" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -160.0
+margin_top = -90.0
+margin_right = 160.0
+margin_bottom = 90.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="NinePatchRect"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -100.0
+margin_top = -90.0
+margin_right = 100.0
+margin_bottom = 90.0
+rect_min_size = Vector2( 200, 100 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Title" type="Label" parent="NinePatchRect/VBoxContainer"]
+margin_right = 200.0
+margin_bottom = 14.0
+text = "Stats"
+align = 1
+
+[node name="Dexterity" type="HBoxContainer" parent="NinePatchRect/VBoxContainer"]
+margin_top = 18.0
+margin_right = 200.0
+margin_bottom = 32.0
+
+[node name="Label" type="Label" parent="NinePatchRect/VBoxContainer/Dexterity"]
+margin_right = 67.0
+margin_bottom = 14.0
+text = "Dexterity :"
+
+[node name="Value" type="Label" parent="NinePatchRect/VBoxContainer/Dexterity"]
+margin_left = 71.0
+margin_right = 71.0
+margin_bottom = 14.0
+
+[node name="Intelligence" type="HBoxContainer" parent="NinePatchRect/VBoxContainer"]
+margin_top = 36.0
+margin_right = 200.0
+margin_bottom = 50.0
+
+[node name="Label" type="Label" parent="NinePatchRect/VBoxContainer/Intelligence"]
+margin_right = 84.0
+margin_bottom = 14.0
+text = "Intelligence :"
+
+[node name="Value" type="Label" parent="NinePatchRect/VBoxContainer/Intelligence"]
+margin_left = 88.0
+margin_right = 88.0
+margin_bottom = 14.0
+
+[node name="Strength" type="HBoxContainer" parent="NinePatchRect/VBoxContainer"]
+margin_top = 54.0
+margin_right = 200.0
+margin_bottom = 68.0
+
+[node name="Label" type="Label" parent="NinePatchRect/VBoxContainer/Strength"]
+margin_right = 61.0
+margin_bottom = 14.0
+text = "Strength :"
+
+[node name="Value" type="Label" parent="NinePatchRect/VBoxContainer/Strength"]
+margin_left = 65.0
+margin_right = 65.0
+margin_bottom = 14.0
