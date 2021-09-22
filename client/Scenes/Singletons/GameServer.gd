@@ -45,8 +45,8 @@ remote func FetchToken():
 
 remote func ReturnTokenVerificationResults(result):
 	if result == true:
-		get_node("../LoginScreen").queue_free()
-		get_tree().change_scene("res://World.tscn")
+		# get_node("../LoginScreen").queue_free()
+		# get_tree().change_scene("res://World.tscn")
 		print("successful token verification")
 	else:
 		print("Login failed, try again")

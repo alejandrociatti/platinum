@@ -56,13 +56,13 @@ func _OnConnectionSucceeded():
 	 
 func RequestLogin():
 	print("connect to gateway to request login")
-	rpc_id(1, "LoginRequest", username, password)
+	rpc_id(1, "LoginRequest", username, password.sha256_text())
 	username = ""
 	password = ""
 
 func RequestCreateAccount():
 	print("requesting new account")
-	rpc_id(1, "CreateAccountRequest", username, password)
+	rpc_id(1, "CreateAccountRequest", username, password.sha256_text())
 	username = ""
 	password = ""
 
