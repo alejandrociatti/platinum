@@ -24,6 +24,10 @@ config/icon="res://icon.png"
 ServerData="*res://Scenes/Singletons/ServerData.gd"
 HubConnection="*res://Scenes/Singletons/HubConnection.gd"
 
+[physics]
+
+common/physics_fps=20
+
 [rendering]
 
 environment/default_environment="res://default_env.tres"

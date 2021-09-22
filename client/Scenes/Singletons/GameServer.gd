@@ -59,3 +59,9 @@ remote func SpawnNewPlayer(player_id, spawn_position):
 remote func DespawnPlayer(player_id):
 	get_node("../World").DespawnPlayer(player_id)
 	
+func SendPlayerState(player_state):
+	rpc_unreliable_id(1, "ReceivedPlayerState", player_state)
+	
+remote func ReceiveWorldState(world_state):
+	get_node("../World").UpdateWorldState(world_state)
+	

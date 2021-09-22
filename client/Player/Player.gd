@@ -19,6 +19,7 @@ var state = MOVE
 var velocity = Vector2.ZERO
 var roll_vector = Vector2.DOWN
 var stats = PlayerStats
+var player_state
 
 onready var animationPlayer = $AnimationPlayer
 onready var animationTree = $AnimationTree
@@ -28,6 +29,7 @@ onready var hurtbox = $Hurtbox
 onready var blinkAnimationPlayer = $BlinkAnimationPlayer
 
 func _ready():
+	# set_physics_process(false)
 	randomize()
 	stats.connect("no_health", self, "queue_free")
 	animationTree.active = true
@@ -46,6 +48,12 @@ func _physics_process(delta):
 		
 		ATTACK:
 			attack_state()
+	process_player_state()
+	
+	
+func process_player_state():
+	player_state = {"T": OS.get_system_time_msecs(), "P": get_global_position()}
+	GameServer.SendPlayerState(player_state)
 	
 func move_state(delta):
 	var input_vector = Vector2.ZERO

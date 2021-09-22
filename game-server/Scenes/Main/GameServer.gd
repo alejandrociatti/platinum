@@ -5,6 +5,7 @@ var port = 1909
 var max_players = 100
 
 var expected_tokens = []
+var player_states = {}
 
 onready var player_verification_process = get_node("PlayerVerification")
 onready var combat_functions = get_node("Combat")
@@ -29,6 +30,7 @@ func _Peer_Disconnected(player_id):
 	print("User " + str(player_id) + " Disconnected.")
 	if has_node(str(player_id)):
 		get_node(str(player_id)).queue_free()
+		player_states.erase(player_id)
 		rpc_id(0, "DespawnPlayer", player_id)
 	
 remote func RequestSkillDamage(skill_name, requester):
@@ -67,3 +69,14 @@ func ReturnTokenVerificationResults(player_id, result):
 	rpc_id(player_id, "ReturnTokenVerificationResults", result)
 	if result:
 		rpc_id(0, "SpawnNewPlayer", player_id, Vector2(50, 50))
+		
+remote func ReceivedPlayerState(player_state):
+	var player_id = get_tree().get_rpc_sender_id()
+	if player_states.has(player_id):
+		if player_states[player_id]["T"] < player_state["T"]: # if player state is newer
+			player_states[player_id] = player_state
+	else:
+		player_states[player_id] = player_state # add to state if not present
+
+func SendWorldState(world_state):
+	rpc_unreliable_id(0, "ReceiveWorldState", world_state)
