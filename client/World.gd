@@ -25,6 +25,9 @@ func _physics_process(delta):
 			if get_node("YSort/OtherPlayers").has_node(str(player)):
 				var new_position = lerp(world_state_buffer[0][player]["P"], world_state_buffer[1][player]["P"], interpolation_factor)
 				get_node("YSort/OtherPlayers/" + str(player)).MovePlayer(new_position)
+			else:
+				print("spawning player")
+				SpawnNewPlayer(player, world_state_buffer[1][player]["P"])
 	
 func SpawnNewPlayer(player_id, spawn_position):
 	if get_tree().get_network_unique_id() == player_id:
@@ -44,16 +47,4 @@ func UpdateWorldState(world_state):
 	if world_state["T"] > last_world_state:
 		last_world_state = world_state["T"]
 		world_state_buffer.append(world_state)
-	
-func UpdateWorldState_OLD(world_state):
-	# Buffer
-	# Interpolation
-	# Extrapolation
-	# Rubber Banding
-		for player in world_state.keys():
-			if get_node("YSort/OtherPlayers").has_node(str(player)):
-				get_node("YSort/OtherPlayers/" + str(player)).MovePlayer(world_state[player]["P"])
-			else:
-				print("spawning player")
-				SpawnNewPlayer(player, world_state[player]["P"])
 	
