@@ -57,6 +57,14 @@ func _on_TokenExpiration_timeout():
 				expected_tokens.remove(i)
 	print("expected tokens")
 	print(expected_tokens)
+
+remote func FetchServerTime(client_time):
+	var player_id = get_tree().get_rpc_sender_id()
+	rpc_id(player_id, "ReturnServerTime", OS.get_system_time_msecs(), client_time)
+
+remote func DetermineLatency(client_time):
+	var player_id = get_tree().get_rpc_sender_id()
+	rpc_id(player_id, "ReturnLatency", client_time)
 	
 func FetchToken(player_id):
 	rpc_id(player_id, "FetchToken")
