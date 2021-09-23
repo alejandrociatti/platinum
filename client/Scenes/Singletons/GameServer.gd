@@ -16,7 +16,7 @@ var client_clock = 0
 
 func _physics_process(delta):
 	client_clock += int(delta*1000) + delta_latency
-	delta_latency -= delta_latency
+	delta_latency = 0
 	decimal_collector += (delta*1000) - int(delta*1000)
 	if decimal_collector >= 1.0:
 		client_clock += 1
@@ -61,8 +61,8 @@ remote func ReturnLatency(client_time):
 				total_latency += latency_array[i]
 		delta_latency = (total_latency / latency_array.size()) - latency
 		latency = total_latency / latency_array.size()
-		print("new latency ", latency)
-		print("delta latency ", delta_latency)
+		# print("new latency ", latency)
+		# print("delta latency ", delta_latency)
 		latency_array.clear()
 
 func FetchPlayerStats():
@@ -104,4 +104,5 @@ func SendPlayerState(player_state):
 
 remote func ReceiveWorldState(world_state):
 	get_node("../World").UpdateWorldState(world_state)
+	#print("server-clock: ", world_state["T"], " client-clock: ", client_clock)
 
