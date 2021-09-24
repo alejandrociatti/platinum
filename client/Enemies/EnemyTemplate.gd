@@ -18,7 +18,7 @@ func _ready():
 	if state == "idle":
 		pass
 	elif state == "dead":
-		kill_enemy()
+		kill_enemy(false)
 
 func OnHit(damage):
 	GameServer.NPCHit(int(get_name()), damage)
@@ -35,8 +35,10 @@ func Health(new_health):
 	if new_health != health:
 		health = new_health
 		update_health_bar()
+		if health <= 0:
+			kill_enemy(true)
 	if health <= 0:
-		kill_enemy()
+		kill_enemy(false)
 
 func update_health_bar():
 	var percentage = int(health / max_health * 100)
@@ -56,7 +58,7 @@ func enable_health_bar():
 func disable_health_bar():
 	health_bar.hide()
 
-func kill_enemy():
+func kill_enemy(animate_death):
 	disable_health_bar()
 	get_node("AnimationPlayer").stop()
 	get_node("Hurtbox").set_deferred("disabled", true)
@@ -64,9 +66,10 @@ func kill_enemy():
 	get_node("SoftCollision").set_deferred("disabled", true)
 	# queue_free()
 	self.hide()
-	var enemyDeathEffect = EnemyDeathEffect.instance()
-	get_parent().add_child(enemyDeathEffect)
-	enemyDeathEffect.global_position = global_position
+	if animate_death:
+		var enemyDeathEffect = EnemyDeathEffect.instance()
+		get_parent().add_child(enemyDeathEffect)
+		enemyDeathEffect.global_position = global_position
 
 func _on_Hurtbox_invincibility_started():
 	animationPlayer.play("Start")
