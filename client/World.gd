@@ -1,30 +1,28 @@
 extends Node2D
 
 var player_spawn = preload("res://Player/PlayerTemplate.tscn")
-var enemy_spawn = preload("res://Enemies/Bat.tscn")
+var enemy_spawn = preload("res://Enemies/EnemyTemplate.tscn")
 var last_world_state = 0
 var interpolation_offset = 100
 var world_state_buffer = []
 
 func process_player_interpolation(player, interpolation_factor):
-	if str(player) == "T" || str(player == "enemies"): # exclude timestamp and enemies
-		pass
-	if player == get_tree().get_network_unique_id():
-		pass
-	if not world_state_buffer[1].has(player):
-		pass
+	if int(player) == get_tree().get_network_unique_id():
+		return
+	if not world_state_buffer[1]["players"].has(player):
+		return
 	if get_node("YSort/OtherPlayers").has_node(str(player)):
-		var new_position = lerp(world_state_buffer[1][player]["P"], world_state_buffer[2][player]["P"], interpolation_factor)
+		var new_position = lerp(world_state_buffer[1]["players"][player]["pos"], world_state_buffer[2]["players"][player]["pos"], interpolation_factor)
 		get_node("YSort/OtherPlayers/" + str(player)).MovePlayer(new_position)
 	else:
 		print("spawning player")
-		SpawnNewPlayer(player, world_state_buffer[2][player]["P"])
+		SpawnNewPlayer(player, world_state_buffer[2]["players"][player]["pos"])
 
 func process_enemy_interpolation(enemy, interpolation_factor):
 	if not world_state_buffer[1]["enemies"].has(enemy):
-		pass
+		return	
 	if get_node("YSort/Enemies").has_node(str(enemy)):
-		var new_position = lerp(world_state_buffer[1]["enemies"][enemy]["location"], interpolation_factor)
+		var new_position = lerp(world_state_buffer[1]["enemies"][enemy]["pos"], world_state_buffer[2]["enemies"][enemy]["pos"], interpolation_factor)
 		get_node("YSort/Enemies/" + str(enemy)).MoveEnemy(new_position)
 		get_node("YSort/Enemies/" + str(enemy)).Health(world_state_buffer[1]["enemies"][enemy]["health"])
 	else:
@@ -32,19 +30,28 @@ func process_enemy_interpolation(enemy, interpolation_factor):
 
 
 func process_player_extrapolation(player, extrapolation_factor):
-	if str(player) == "T" || str(player == "enemies"): # exclude timestamp and enemies
-		pass
 	if player == get_tree().get_network_unique_id():
-		pass
-	if not world_state_buffer[0].has(player):
-		pass
+		return	
+	if not world_state_buffer[0]["players"].has(player):
+		return
 	if get_node("YSort/OtherPlayers").has_node(str(player)):
-		var position_delta = (world_state_buffer[1][player]["P"] - world_state_buffer[0][player]["P"])
-		var new_position = world_state_buffer[1][player]["P"] + (position_delta * extrapolation_factor)
+		var position_delta = (world_state_buffer[1]["players"][player]["pos"] - world_state_buffer[0]["players"][player]["pos"])
+		var new_position = world_state_buffer[1]["players"][player]["pos"] + (position_delta * extrapolation_factor)
 		get_node("YSort/OtherPlayers/" + str(player)).MovePlayer(new_position)
 	else:
 		print("spawning player")
-		SpawnNewPlayer(player, world_state_buffer[2][player]["P"])
+		SpawnNewPlayer(player, world_state_buffer[2]["players"][player]["pos"])
+
+func process_enemy_extrapolation(enemy, extrapolation_factor):
+	if not world_state_buffer[0]["enemies"].has(enemy):
+		return	
+	if get_node("YSort/Enemies").has_node(str(enemy)):
+		var position_delta = (world_state_buffer[1]["enemies"][enemy]["pos"] - world_state_buffer[0]["enemies"][enemy]["pos"])
+		var new_position = world_state_buffer[1]["enemies"][enemy]["pos"] + (position_delta * extrapolation_factor)
+		get_node("YSort/Enemies/" + str(enemy)).MoveEnemy(new_position)
+	else:
+		print("spawning enemy")
+		SpawnNewEnemy(enemy, world_state_buffer[2]["enemies"][enemy]["pos"])
 
 func _physics_process(_delta):
 	var render_time = GameServer.client_clock - interpolation_offset
@@ -56,7 +63,7 @@ func _physics_process(_delta):
 				float(render_time - world_state_buffer[1]["T"]) /
 				float(world_state_buffer[2]["T"] - world_state_buffer[1]["T"])
 			)
-			for player in world_state_buffer[2].keys():
+			for player in world_state_buffer[2]["players"].keys():
 				process_player_interpolation(player, interpolation_factor)
 			for enemy in world_state_buffer[2]["enemies"].keys():
 				process_enemy_interpolation(enemy, interpolation_factor)
@@ -65,8 +72,10 @@ func _physics_process(_delta):
 				float(render_time - world_state_buffer[0]["T"]) /
 				float(world_state_buffer[1]["T"] - world_state_buffer[0]["T"])
 			) - 1.0 # deduct time passed between the two states
-			for player in world_state_buffer[1].keys():
+			for player in world_state_buffer[1]["players"].keys():
 				process_player_extrapolation(player, extrapolation_factor)
+			for enemy in world_state_buffer[1]["enemies"].keys():
+				process_enemy_extrapolation(enemy, extrapolation_factor)
 
 
 func SpawnNewPlayer(player_id, spawn_position):
@@ -82,13 +91,13 @@ func SpawnNewPlayer(player_id, spawn_position):
 
 func SpawnNewEnemy(enemy_id, enemy_dict):
 	var new_enemy = enemy_spawn.instance()
-	new_enemy.position = enemy_dict["location"]
+	new_enemy.position = enemy_dict["pos"]
 	new_enemy.max_health = enemy_dict["max_health"]
 	new_enemy.health = enemy_dict["health"]
 	new_enemy.type = enemy_dict["type"]
 	new_enemy.state = enemy_dict["state"]
 	new_enemy.name = str(enemy_id)
-	get_node("YSort/Enemies").add_child(new_enemy, true):w
+	get_node("YSort/Enemies").add_child(new_enemy, true)
 
 
 func DespawnPlayer(player_id):

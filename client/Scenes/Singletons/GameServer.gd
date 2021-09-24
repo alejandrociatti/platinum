@@ -68,6 +68,10 @@ remote func ReturnLatency(client_time):
 func FetchPlayerStats():
 	rpc_id(1, "FetchPlayerStats")
 
+func NPCHit(enemy_id, damage):
+	print("hit NPC with: " + str(damage) + " damage")
+	rpc_id(1, "SendNPCHit", enemy_id, damage)
+
 remote func ReturnPlayerStats(stats):
 	emit_signal("stats_ready", stats)
 

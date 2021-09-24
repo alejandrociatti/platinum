@@ -52,7 +52,7 @@ func _physics_process(delta):
 	
 	
 func process_player_state():
-	player_state = {"T": OS.get_system_time_msecs(), "P": get_global_position()}
+	player_state = {"T": OS.get_system_time_msecs(), "pos": get_global_position()}
 	GameServer.SendPlayerState(player_state)
 	
 func move_state(delta):

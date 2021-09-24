@@ -43,7 +43,6 @@ remote func FetchPlayerStats():
 	var player_id = get_tree().get_rpc_sender_id()
 	var player_stats = get_node(str(player_id)).player_stats
 	rpc_id(player_id, "ReturnPlayerStats", player_stats)
-	
 
 func _on_TokenExpiration_timeout():
 	var current_time = OS.get_unix_time()
@@ -55,8 +54,8 @@ func _on_TokenExpiration_timeout():
 			token_time = int(expected_tokens[i].right(64))
 			if current_time - token_time >= 30:
 				expected_tokens.remove(i)
-	print("expected tokens")
-	print(expected_tokens)
+	# print("expected tokens")
+	# print(expected_tokens)
 
 remote func FetchServerTime(client_time):
 	var player_id = get_tree().get_rpc_sender_id()
@@ -88,3 +87,6 @@ remote func ReceivedPlayerState(player_state):
 
 func SendWorldState(world_state):
 	rpc_unreliable_id(0, "ReceiveWorldState", world_state)
+
+remote func SendNPCHit(enemy_id, damage):
+	get_node("World").NPCHit(enemy_id, damage)

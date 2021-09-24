@@ -82,11 +82,14 @@ func _on_Hurtbox_area_entered(area):
 	hurtbox.create_hit_effect()
 	hurtbox.start_invincibility(0.4)
 
-func _on_Stats_no_health():
+func kill_bat():
 	queue_free()
 	var enemyDeathEffect = EnemyDeathEffect.instance()
 	get_parent().add_child(enemyDeathEffect)
 	enemyDeathEffect.global_position = global_position
+
+func _on_Stats_no_health():
+	kill_bat()
 
 func _on_Hurtbox_invincibility_started():
 	animationPlayer.play("Start")
