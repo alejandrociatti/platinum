@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Scenes/Main/PlayerVerification.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/Main/GameServer.gd" type="Script" id=2]
 [ext_resource path="res://Scenes/Main/Combat.gd" type="Script" id=3]
 [ext_resource path="res://Scenes/Main/StateProcessing.gd" type="Script" id=4]
+[ext_resource path="res://Scenes/Main/World.gd" type="Script" id=5]
 
 [node name="GameServer" type="Node"]
 script = ExtResource( 2 )
@@ -23,5 +24,8 @@ autostart = true
 
 [node name="StateProcessing" type="Node" parent="."]
 script = ExtResource( 4 )
+
+[node name="World" type="Node" parent="."]
+script = ExtResource( 5 )
 [connection signal="timeout" from="PlayerVerification/VerificationExpired" to="PlayerVerification" method="_on_VerificationExpired_timeout"]
 [connection signal="timeout" from="TokenExpiration" to="." method="_on_TokenExpiration_timeout"]
