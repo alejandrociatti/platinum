@@ -90,3 +90,7 @@ func SendWorldState(world_state):
 
 remote func SendNPCHit(enemy_id, damage):
 	get_node("World").NPCHit(enemy_id, damage)
+
+remote func Attack(position, animation_vector, spawn_time):
+	var player_id = get_tree().get_rpc_sender_id()
+	rpc_id(0, "ReceiveAttack", position, animation_vector, spawn_time, player_id)

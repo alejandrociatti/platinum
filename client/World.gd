@@ -13,7 +13,8 @@ func process_player_interpolation(player, interpolation_factor):
 		return
 	if get_node("YSort/OtherPlayers").has_node(str(player)):
 		var new_position = lerp(world_state_buffer[1]["players"][player]["pos"], world_state_buffer[2]["players"][player]["pos"], interpolation_factor)
-		get_node("YSort/OtherPlayers/" + str(player)).MovePlayer(new_position)
+		var animation_vector = world_state_buffer[2]["players"][player]["a"]
+		get_node("YSort/OtherPlayers/" + str(player)).MovePlayer(new_position, animation_vector)
 	else:
 		print("spawning player")
 		SpawnNewPlayer(player, world_state_buffer[2]["players"][player]["pos"])
@@ -37,7 +38,8 @@ func process_player_extrapolation(player, extrapolation_factor):
 	if get_node("YSort/OtherPlayers").has_node(str(player)):
 		var position_delta = (world_state_buffer[1]["players"][player]["pos"] - world_state_buffer[0]["players"][player]["pos"])
 		var new_position = world_state_buffer[1]["players"][player]["pos"] + (position_delta * extrapolation_factor)
-		get_node("YSort/OtherPlayers/" + str(player)).MovePlayer(new_position)
+		var animation_vector = world_state_buffer[1]["players"][player]["a"]
+		get_node("YSort/OtherPlayers/" + str(player)).MovePlayer(new_position, animation_vector)
 	else:
 		print("spawning player")
 		SpawnNewPlayer(player, world_state_buffer[2]["players"][player]["pos"])

@@ -8,7 +8,7 @@ func _ready():
 	GameServer.FetchPlayerStats()
 	GameServer.connect("stats_ready", self, "_LoadPlayerStats")
 	
-func _process(delta):
+func _process(_delta):
 	if Input.is_action_just_released("toggle_player_stats"):
 		queue_free()
 	

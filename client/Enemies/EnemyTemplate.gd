@@ -20,15 +20,16 @@ func _ready():
 	elif state == "dead":
 		kill_enemy(false)
 
-func OnHit(damage):
-	GameServer.NPCHit(int(get_name()), damage)
+func OnHit(damage, is_original):
+	if is_original:
+		GameServer.NPCHit(int(get_name()), damage)
 
 func MoveEnemy(_new_position):
 	pass # TODO
 
 func _on_Hurtbox_area_entered(area):
 	hurtbox.create_hit_effect()
-	OnHit(area.damage)
+	OnHit(area.damage, area.original)
 	hurtbox.start_invincibility(0.4)
 
 func Health(new_health):
@@ -37,8 +38,6 @@ func Health(new_health):
 		update_health_bar()
 		if health <= 0:
 			kill_enemy(true)
-	if health <= 0:
-		kill_enemy(false)
 
 func update_health_bar():
 	var percentage = int(health / max_health * 100)
@@ -58,6 +57,7 @@ func enable_health_bar():
 func disable_health_bar():
 	health_bar.hide()
 
+# kill_enemy( animate_death : bool )
 func kill_enemy(animate_death):
 	disable_health_bar()
 	get_node("AnimationPlayer").stop()

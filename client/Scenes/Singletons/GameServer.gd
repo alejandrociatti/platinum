@@ -106,7 +106,15 @@ remote func DespawnPlayer(player_id):
 func SendPlayerState(player_state):
 	rpc_unreliable_id(1, "ReceivedPlayerState", player_state)
 
+func SendAttack(position, animation_vector):
+	rpc_id(1, "Attack", position, animation_vector, client_clock)
+
 remote func ReceiveWorldState(world_state):
 	get_node("../World").UpdateWorldState(world_state)
 	#print("server-clock: ", world_state["T"], " client-clock: ", client_clock)
 
+remote func ReceiveAttack(position, animation_vector, spawn_time, player_id):
+	if player_id == get_tree().get_network_unique_id():
+		pass # TODO maybe correct client-side predictions here
+	else:
+		get_node("../World/YSort/OtherPlayers/" + str(player_id)).attack_dict[spawn_time] = {"pos": position, "a": animation_vector}

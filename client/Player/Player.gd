@@ -20,6 +20,7 @@ var velocity = Vector2.ZERO
 var roll_vector = Vector2.DOWN
 var stats = PlayerStats
 var player_state
+var animation_vector = Vector2()
 
 onready var animationPlayer = $AnimationPlayer
 onready var animationTree = $AnimationTree
@@ -52,7 +53,7 @@ func _physics_process(delta):
 	
 	
 func process_player_state():
-	player_state = {"T": OS.get_system_time_msecs(), "pos": get_global_position()}
+	player_state = {"T": OS.get_system_time_msecs(), "pos": get_global_position(), "a": animation_vector}
 	GameServer.SendPlayerState(player_state)
 	
 func move_state(delta):
@@ -63,6 +64,7 @@ func move_state(delta):
 	
 	if input_vector != Vector2.ZERO:
 		roll_vector = input_vector
+		animation_vector = roll_vector # TODO maybe move 7 lines below and make it input*max-speed?
 		swordHitbox.knockback_vector = input_vector
 		animationTree.set("parameters/Idle/blend_position", input_vector)
 		animationTree.set("parameters/Run/blend_position", input_vector)
@@ -88,6 +90,7 @@ func roll_state():
 	move()
 
 func attack_state():
+	GameServer.SendAttack(position, animation_vector)
 	velocity = Vector2.ZERO
 	animationState.travel("Attack")
 
